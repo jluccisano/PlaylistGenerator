@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="playlistGenerator" basedir=".">
+
+	<property file="build.properties"/>
+
+	<target name="clean">
+		
+		<echo>initialize the output directory</echo>
+		
+		<delete dir="build" />
+		
+		<delete dir="${playlist.outdir}" />
+		
+		<mkdir dir="${playlist.outdir}" />
+		
+	</target>
+	
+	
+	 <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" debug="on" destdir="build/classes">
+        	 <classpath>
+     			 <fileset dir="libs">
+       				 <include name="*.jar"/>
+     			 </fileset>
+    		</classpath>     	
+        </javac>
+    </target>
+    
+    <target name="jar">
+        <mkdir dir="build/jar"/>
+        <jar jarfile="build/jar/PlaylistGenerator.jar" 
+             basedir="build/classes">
+            <zipfileset src="libs/log4j-1.2.16.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="com.playlist.Main"/>
+                <attribute name="Class-Path" value="libs/log4j-1.2.16.jar"/>
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="run">
+        <java jar="build/jar/PlaylistGenerator.jar" 
+              fork="true">
+          <arg value="${music.home}"/>
+          <arg value="${playlist.outdir}"/>
+        </java>
+    </target>
+    
+	
+	<target name="execute" depends="clean, compile, jar, run"/>
+	
+	
+</project>
